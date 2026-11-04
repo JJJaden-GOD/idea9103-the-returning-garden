@@ -1,10 +1,16 @@
 // ChatGPT assisted the implementation and documentation of this project.
 // Course techniques: preload/setup/draw, arrays, functions, classes, rect,
 // lerp/lerpColor, coordinate transforms and windowResized. See README sources.
+// Supplementary APIs: deltaTime measures elapsed frame time for smooth motion;
+// pixelDensity(1) limits the output resolution, and parent/elt place and label
+// the canvas in the HTML interface. These are explained as extensions in README.
+// https://p5js.org/reference/p5/deltaTime/
+// https://developer.mozilla.org/en-US/docs/Web/API/Document
 
 let castle;
 let worldClock;
 let cloudSystem;
+let worldDetails;
 let audioMechanic;
 let soundtrack;
 let soundReady = false;
@@ -37,6 +43,7 @@ function setup() {
   castle = new Castle();
   worldClock = new WorldClock(60000);
   cloudSystem = new CloudSystem(3);
+  worldDetails = new WorldDetails();
   audioMechanic = new AudioMechanic(soundReady ? soundtrack : null);
   for (let key of paletteKeys) scenePalette[key] = worldClock.palette[key];
   updateCastleLayout();
@@ -56,6 +63,8 @@ function draw() {
   }
   let horizon = height * 0.61;
   drawLandscape(scenePalette, horizon);
+  worldDetails.update(worldClock, blend);
+  worldDetails.display(horizon);
   if (sceneStarted) cloudSystem.update(worldClock.phaseIndex, seconds);
   cloudSystem.display(scenePalette, horizon);
   drawWater(scenePalette);
@@ -155,15 +164,8 @@ function updateInterface() {
   lastPhase = worldClock.phaseIndex;
   lastSoundPlaying = audioMechanic.playing;
   lastAudioStatus = audioMechanic.getStatus();
-  const messages = [
-    'Everything begins in stillness.',
-    'A world alive with small changes.',
-    'Even a darkened garden can return.',
-    'Colour finds its way home.'
-  ];
   document.getElementById('phase-number').textContent = '0' + (worldClock.phaseIndex + 1);
   document.getElementById('phase-name').textContent = worldClock.label.toUpperCase();
-  document.getElementById('stage-message').textContent = sceneStarted ? messages[worldClock.phaseIndex] : 'A small world, waiting to begin.';
   document.getElementById('paused-label').hidden = !worldClock.paused;
   document.getElementById('enter-button').textContent = sceneStarted ? 'Restart cycle' : 'Enter garden ↗';
   let soundButton = document.getElementById('sound-button');
@@ -173,9 +175,12 @@ function updateInterface() {
   pauseButton.disabled = !sceneStarted;
   pauseButton.textContent = worldClock.paused ? 'Resume cycle' : 'Pause cycle';
   pauseButton.setAttribute('aria-pressed', String(worldClock.paused));
-  document.getElementById('audio-note').textContent = soundReady ? 'Sound is optional. Enable it to see the tower breathe.' : 'The garden is available without sound. The audio file could not be loaded.';
+  let audioNote = document.getElementById('audio-note');
+  audioNote.hidden = soundReady;
+  audioNote.textContent = soundReady ? '' : 'Sound unavailable. The garden can continue silently.';
   if (lastAudioStatus.indexOf('error') !== -1 || lastAudioStatus.indexOf('blocked') !== -1) {
-    document.getElementById('audio-note').textContent = 'Sound could not start. Select Enable sound to retry.';
+    audioNote.hidden = false;
+    audioNote.textContent = 'Sound could not start. Select Enable sound to retry.';
   }
   let labels = document.querySelectorAll('.journey-labels span');
   for (let i = 0; i < labels.length; i++) labels[i].classList.toggle('current', i === worldClock.phaseIndex);
@@ -201,6 +206,8 @@ function keyPressed() {
 }
 
 function windowResized() {
+  // A viewport resize can arrive before preload() and setup() finish.
+  if (!castle) return;
   resizeCanvas(getGardenWidth(), getGardenHeight());
   updateCastleLayout();
 }

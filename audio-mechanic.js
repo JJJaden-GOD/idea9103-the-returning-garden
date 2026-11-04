@@ -5,6 +5,9 @@
  * to allow playback after the user's click or key press.
  * API reference: https://v1.p5js.org/reference/p5.Amplitude/getLevel/
  * The WAV is original AI-assisted synthesis; see README for its provenance.
+ * Supplementary audio-start/error handling:
+ * https://v1.p5js.org/reference/p5/userStartAudio/
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
  */
 
 class AudioMechanic {

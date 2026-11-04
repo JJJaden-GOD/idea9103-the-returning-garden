@@ -1,58 +1,213 @@
+/* Decorative CSS extension: the self-hosted font, layered gradients,
+   pseudo-elements, and button transitions go beyond the explicitly reviewed
+   classroom CSS. These style the page without changing the p5 mechanics.
+   Sources: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@font-face
+   https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/gradient/radial-gradient */
+@font-face {
+  font-family: "Oxanium";
+  src: url("assets/fonts/Oxanium-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
 :root {
-  color-scheme: light;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #253c38;
-  background: #f6f5ee;
+  color-scheme: dark;
+  font-family: "Oxanium", "Trebuchet MS", Arial, sans-serif;
+  font-weight: 400;
+  color: #e7dff0;
+  background: #050610;
 }
 * { box-sizing: border-box; }
-body { margin: 0; }
-.garden-page { width: min(1120px, calc(100% - 96px)); margin: 0 auto; padding: 26px 0 22px; }
-.page-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: 22px; }
-.eyebrow { font-size: 10px; letter-spacing: .21em; margin: 0 0 9px; color: #65766b; }
-h1 { font: normal clamp(30px, 3vw, 47px)/1.05 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; margin: 0; }
-.art-reference { font: 12px/1.7 Georgia, 'Times New Roman', serif; text-align: right; margin: 0 1px 2px; }
-.art-reference span { color: #7b867a; font-style: italic; }
-.artwork { position: relative; overflow: hidden; border: 1px solid #c6d0c3; background: #dce8de; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 13% 13%, rgba(92, 38, 120, .16), transparent 45%),
+    radial-gradient(ellipse at 92% 74%, rgba(74, 49, 117, .14), transparent 42%),
+    linear-gradient(135deg, #050610, #070812 56%, #050610);
+}
+/* Still pinpoints remain behind the artwork and never intercept clicks. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 7% 12%, #cdbfe7 90%, transparent),
+    radial-gradient(1px 1px at 18% 42%, #8d87b6 90%, transparent),
+    radial-gradient(1px 1px at 31% 6%, #cdb6dd 90%, transparent),
+    radial-gradient(1px 1px at 44% 89%, #8079a7 90%, transparent),
+    radial-gradient(1px 1px at 56% 11%, #a69ac7 90%, transparent),
+    radial-gradient(1px 1px at 69% 92%, #b5a2c6 90%, transparent),
+    radial-gradient(1px 1px at 82% 7%, #afa6ce 90%, transparent),
+    radial-gradient(1px 1px at 96% 32%, #d7bbd5 90%, transparent),
+    radial-gradient(1px 1px at 91% 81%, #8f84ae 90%, transparent),
+    radial-gradient(1px 1px at 4% 73%, #9c8eab 90%, transparent),
+    radial-gradient(1.5px 1.5px at 13% 91%, #c8b3d8 90%, transparent),
+    radial-gradient(1px 1px at 97% 94%, #9a9ac2 90%, transparent);
+  opacity: .75;
+}
+/* The diagonal haze suggests a Milky Way band without an external image. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(130deg,
+    transparent 22%, rgba(105, 65, 140, .04) 32%,
+    rgba(153, 99, 178, .13) 41%, rgba(113, 98, 160, .085) 46%,
+    rgba(86, 76, 132, .035) 52%, transparent 65%);
+  filter: blur(25px);
+}
+.garden-page {
+  width: min(1120px, calc(100% - 96px));
+  margin: 0 auto;
+  padding: 28px 0 25px;
+}
+.page-heading { padding-bottom: 21px; }
+h1 {
+  font-size: clamp(29px, 3.1vw, 44px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  margin: 0;
+  color: #f2e8f6;
+  text-shadow: 0 0 34px rgba(187, 129, 204, .12);
+}
+.artwork {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #403046;
+  border-radius: 7px;
+  background: #090b17;
+  box-shadow: 0 20px 65px rgba(0, 0, 0, .38), 0 0 28px rgba(139, 72, 162, .055);
+}
 #canvas-host { width: 100%; }
 canvas { display: block; max-width: 100%; touch-action: manipulation; }
-canvas:focus-visible { outline: 2px solid #bc6550; outline-offset: -4px; }
-.stage-caption { position: absolute; top: 24px; left: 27px; display: flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .17em; pointer-events: none; z-index: 1; color: var(--caption-colour, #415e54); }
+canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
+.stage-caption {
+  position: absolute;
+  top: 24px;
+  left: 27px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  pointer-events: none;
+  z-index: 1;
+  color: var(--caption-colour, #e5d9ef);
+}
 #phase-number { opacity: .55; padding-right: 12px; border-right: 1px solid currentColor; }
 #paused-label { font-size: 8px; letter-spacing: .12em; opacity: .7; }
 #paused-label[hidden] { display: none; }
-.stage-message { position: absolute; bottom: 15px; width: 100%; text-align: center; margin: 0; color: var(--caption-colour, #415e54); font: italic 13px/1.4 Georgia, 'Times New Roman', serif; pointer-events: none; }
-.experience-controls { display: flex; justify-content: space-between; align-items: center; gap: 45px; margin-top: 21px; }
-.journey { max-width: 540px; flex: 1; }
-.journey-track { height: 2px; background: #d9ddd2; position: relative; }
-.journey-track::after { content: ''; position: absolute; inset: -3px 0; background: linear-gradient(to right, transparent 24.7%, #f6f5ee 24.7% 25.3%, transparent 25.3% 49.7%, #f6f5ee 49.7% 50.3%, transparent 50.3% 74.7%, #f6f5ee 74.7% 75.3%, transparent 75.3%); }
-#cycle-progress { display: block; height: 2px; width: 0%; background: #3a6658; }
-.journey-labels { display: flex; margin-top: 10px; justify-content: space-between; font-size: 10px; letter-spacing: .05em; color: #8b9488; }
-.journey-labels .current { color: #2b5144; }
-.buttons { display: flex; gap: 9px; flex-wrap: wrap; }
-button { font: 11px Arial, Helvetica, sans-serif; letter-spacing: .025em; cursor: pointer; border: 1px solid #ccd3c7; padding: 12px 17px; color: #355448; background: transparent; min-height: 40px; transition: background .2s, border-color .2s; }
-button:hover:not(:disabled) { background: #e9ece2; border-color: #869c88; }
-button:focus-visible { outline: 2px solid #bc6550; outline-offset: 3px; }
-button.primary { color: #fbfaf0; background: #365c4e; border-color: #365c4e; min-width: 132px; }
-button.primary:hover { background: #284d40; }
-button.primary span { margin-left: 12px; }
-button:disabled { cursor: default; opacity: .4; }
-.page-footer { display: flex; justify-content: space-between; gap: 25px; margin-top: 18px; font-size: 11px; line-height: 1.6; color: #6a796c; }
-.page-footer p { margin: 0; }
-.keyboard-hint { white-space: nowrap; color: #3c5749; }
-.keyboard-hint span { color: #859080; font-size: 10px; }
-.audio-note { font-size: 10px; color: #879181; margin: 7px 0 0; }
-@media (max-width: 760px) {
-  .garden-page { width: calc(100% - 32px); padding-top: 23px; }
-  .page-heading { gap: 15px; padding-bottom: 18px; }
-  .art-reference { font-size: 10px; }
-  .art-reference span { display: none; }
-  .eyebrow { font-size: 8px; letter-spacing: .14em; }
-  .experience-controls { flex-direction: column; align-items: stretch; gap: 18px; margin-top: 18px; }
-  .journey { width: 100%; max-width: none; }
-  .buttons { justify-content: space-between; gap: 5px; }
-  button { padding: 11px 13px; }
-  .page-footer { flex-direction: column; gap: 5px; margin-top: 14px; }
-  .stage-caption { left: 18px; top: 18px; }
-  .stage-message { font-size: 11px; bottom: 14px; }
+.experience-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 42px;
+  margin-top: 23px;
 }
-@media (prefers-reduced-motion: reduce) { button { transition: none; } }
+.journey { max-width: 540px; flex: 1; }
+.journey-track { height: 3px; background: #302037; position: relative; }
+.journey-track::after {
+  content: "";
+  position: absolute;
+  inset: -3px 0;
+  background: linear-gradient(to right,
+    transparent 24.7%, #090a15 24.7% 25.3%,
+    transparent 25.3% 49.7%, #090a15 49.7% 50.3%,
+    transparent 50.3% 74.7%, #090a15 74.7% 75.3%, transparent 75.3%);
+}
+#cycle-progress {
+  display: block;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #ba78a7, #caa1db 70%, #b1a3e5);
+  box-shadow: 0 0 12px rgba(203, 135, 204, .28);
+}
+.journey-labels {
+  display: flex;
+  margin-top: 11px;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: .04em;
+  color: #8e809f;
+}
+.journey-labels .current { color: #ead1ef; font-weight: 500; }
+.buttons { display: flex; gap: 9px; flex-wrap: wrap; }
+button {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: .03em;
+  cursor: pointer;
+  border: 1px solid #644467;
+  border-radius: 9px;
+  padding: 13px 17px;
+  min-height: 43px;
+  color: #e6d2ee;
+  background: linear-gradient(135deg, rgba(57, 31, 69, .9), rgba(28, 19, 43, .96));
+  box-shadow: inset 0 1px 0 rgba(246, 214, 255, .065), 0 4px 13px rgba(0, 0, 0, .2);
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .2s;
+}
+button:hover:not(:disabled) {
+  border-color: #c08ac8;
+  color: #fff0ff;
+  background: linear-gradient(135deg, #503054, #2a1e43);
+  box-shadow: inset 0 1px 0 rgba(255, 235, 255, .1), 0 7px 22px rgba(126, 64, 145, .18);
+  transform: translateY(-1px);
+}
+button:focus-visible { outline: 2px solid #f6b9e3; outline-offset: 4px; }
+button:active:not(:disabled) { transform: translateY(0) scale(.98); }
+button[aria-pressed="true"] {
+  border-color: #d39cd6;
+  color: #f8e0f6;
+  background: linear-gradient(135deg, #653757, #392649);
+  box-shadow: inset 0 1px 0 rgba(255, 232, 254, .11), 0 0 18px rgba(181, 100, 174, .16);
+}
+button.primary {
+  color: #2a1337;
+  background: linear-gradient(115deg, #f0b9d7, #d1a7e5 52%, #b29be7);
+  border-color: #efc9ed;
+  min-width: 132px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 7px 24px rgba(168, 83, 158, .19);
+}
+button.primary:hover:not(:disabled) {
+  color: #25102f;
+  background: linear-gradient(115deg, #ffd0e7, #dfb9f0 52%, #c0adf2);
+  border-color: #ffe2f6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 9px 28px rgba(190, 105, 182, .26);
+}
+button.primary span { margin-left: 10px; }
+button:disabled { cursor: default; opacity: .36; box-shadow: none; transform: none; }
+.audio-note { font-size: 11px; line-height: 1.7; color: #d2a8ca; margin: 12px 0 0; }
+.audio-note[hidden] { display: none; }
+noscript { display: block; margin-top: 14px; color: #efd0df; font-size: 12px; }
+@media (max-width: 760px) {
+  .garden-page { width: calc(100% - 32px); padding-top: 24px; }
+  .page-heading { padding-bottom: 18px; }
+  .experience-controls { flex-direction: column; align-items: stretch; gap: 19px; margin-top: 19px; }
+  .journey { width: 100%; max-width: none; }
+  .buttons { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; }
+  button { padding: 12px 10px; }
+  button.primary { min-width: 0; }
+  .stage-caption { left: 18px; top: 18px; }
+}
+@media (max-width: 560px) {
+  h1 { font-size: clamp(27px, 7vw, 36px); }
+}
+@media (max-width: 420px) {
+  .buttons { grid-template-columns: 1fr 1fr; }
+  .buttons .primary { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+  button:hover:not(:disabled), button:active:not(:disabled) { transform: none; }
+}

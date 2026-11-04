@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#e9efe7">
+  <meta name="theme-color" content="#050610">
   <title>The Returning Garden</title>
+  <!-- Oxanium is local; its original OFL and source notice are in assets/fonts. -->
+  <link rel="preload" href="assets/fonts/Oxanium-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="garden-page">
     <header class="page-heading">
-      <div>
-        <p class="eyebrow">AN INTERACTIVE PIXEL GARDEN</p>
-        <h1>The Returning Garden</h1>
-      </div>
-      <p class="art-reference">After Hieronymus Bosch<br><span>A world in a single breath</span></p>
+      <h1>The Returning Garden</h1>
     </header>
 
     <section class="artwork" aria-label="An interactive garden moving between Paradise, Earth, Hell and Return">
@@ -24,7 +22,6 @@
         <span id="paused-label" hidden>PAUSED</span>
       </div>
       <div id="canvas-host"></div>
-      <p class="stage-message" id="stage-message">A small world, waiting to begin.</p>
     </section>
 
     <section class="experience-controls" aria-label="Garden controls">
@@ -43,11 +40,7 @@
       </div>
     </section>
 
-    <footer class="page-footer">
-      <p id="interaction-hint">Enter the garden. Click its tower to bring the world back to Earth.</p>
-      <p class="keyboard-hint">E <span>return</span> · R <span>restart</span> · P <span>pause</span> · Space <span>sound</span></p>
-    </footer>
-    <p class="audio-note" id="audio-note" aria-live="polite">Sound is optional. Enable it to see the tower breathe.</p>
+    <p class="audio-note" id="audio-note" aria-live="polite" hidden></p>
     <noscript>This artwork needs JavaScript. Please enable JavaScript and open index.html through a local web server.</noscript>
   </main>
 
@@ -60,6 +53,7 @@
   <script src="noise-mechanic.js"></script>
   <script src="audio-mechanic.js"></script>
   <script src="input-mechanic.js"></script>
+  <script src="world-details.js"></script>
   <script src="sketch.js"></script>
 </body>
 </html>

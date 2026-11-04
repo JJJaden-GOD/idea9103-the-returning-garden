@@ -2,6 +2,8 @@
 // One clock controls both the automatic cycle and the visitor's intervention.
 // API references: https://p5js.org/reference/p5/millis/
 // https://p5js.org/reference/p5/lerpColor/
+// Supplementary API: millis() reads elapsed milliseconds. The world clock uses
+// this real-time reading to calculate cycle progress and compensate for pauses.
 class WorldClock {
   constructor(duration = 60000) {
     this.duration = duration;
@@ -15,6 +17,8 @@ class WorldClock {
     this.cycleProgress = 0;
     this.label = "Paradise";
     this.phaseNames = ["Paradise", "Earth", "Hell", "Return"];
+    // Background symbols use the same three-world blend as the colour palettes.
+    this.worldWeights = [1, 0, 0];
     this.paletteKeys = [
       "skyTop", "skyBottom", "hill", "water", "waterLight", "cloud",
       "cloudShadow", "navy", "blue", "lightBlue", "coral", "coralLight",
@@ -23,11 +27,11 @@ class WorldClock {
 
     // The same blue, coral and gold building remains recognisable in each world.
     this.paradisePalette = this.makePalette({
-      skyTop: "#D7EFED",
-      skyBottom: "#F2F2D7",
-      hill: "#87B5A0",
-      water: "#78B9C1",
-      waterLight: "#BCE1D7",
+      skyTop: "#BBDFF3",
+      skyBottom: "#F1F3F1",
+      hill: "#9FC4C5",
+      water: "#76B9D1",
+      waterLight: "#D0EDF2",
       cloud: "#FFF9DD",
       cloudShadow: "#C7DECE",
       navy: "#173758",
@@ -42,13 +46,13 @@ class WorldClock {
     });
 
     this.earthPalette = this.makePalette({
-      skyTop: "#91BEB3",
-      skyBottom: "#CBD6A0",
-      hill: "#56886B",
-      water: "#4D9999",
-      waterLight: "#9ECEBB",
-      cloud: "#E6E7C4",
-      cloudShadow: "#A3BFAD",
+      skyTop: "#D39495",
+      skyBottom: "#F7D8A0",
+      hill: "#567A63",
+      water: "#4D8988",
+      waterLight: "#B2D6BB",
+      cloud: "#FFE4BF",
+      cloudShadow: "#D4A89D",
       navy: "#183C51",
       blue: "#316E87",
       lightBlue: "#76B0B2",
@@ -61,11 +65,11 @@ class WorldClock {
     });
 
     this.hellPalette = this.makePalette({
-      skyTop: "#191C35",
-      skyBottom: "#44304D",
-      hill: "#30283B",
-      water: "#252E4D",
-      waterLight: "#50516D",
+      skyTop: "#130F22",
+      skyBottom: "#713544",
+      hill: "#2B192C",
+      water: "#281D35",
+      waterLight: "#AD564F",
       cloud: "#72616F",
       cloudShadow: "#42354F",
       navy: "#17263E",
@@ -108,6 +112,8 @@ class WorldClock {
 
     let firstPalette = this.paradisePalette;
     let nextPalette = this.earthPalette;
+    let firstWorld = 0;
+    let nextWorld = 1;
     let blend = 0;
 
     // At 60 seconds, Paradise and Earth each hold for 10 seconds, then change for 5.
@@ -119,14 +125,20 @@ class WorldClock {
     } else if (this.phaseIndex === 1) {
       firstPalette = this.earthPalette;
       nextPalette = this.hellPalette;
+      firstWorld = 1;
+      nextWorld = 2;
       blend = constrain((phaseTime - stableTime) / changeTime, 0, 1);
     } else if (this.phaseIndex === 2) {
       firstPalette = this.hellPalette;
       nextPalette = this.hellPalette;
+      firstWorld = 2;
+      nextWorld = 2;
     } else if (this.phaseIndex === 3) {
       // Return uses its full stage to move from the dark world back to daylight.
       firstPalette = this.hellPalette;
       nextPalette = this.paradisePalette;
+      firstWorld = 2;
+      nextWorld = 0;
       blend = this.phaseProgress;
     }
 
@@ -135,6 +147,9 @@ class WorldClock {
       const name = this.paletteKeys[i];
       this.palette[name] = lerpColor(firstPalette[name], nextPalette[name], blend);
     }
+    for (let i = 0; i < this.worldWeights.length; i++) this.worldWeights[i] = 0;
+    this.worldWeights[firstWorld] += 1 - blend;
+    this.worldWeights[nextWorld] += blend;
   }
 
   reset() {
