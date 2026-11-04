@@ -6,7 +6,7 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; }
-.garden-page { width: min(1440px, calc(100% - 96px)); margin: 0 auto; padding: 31px 0 22px; }
+.garden-page { width: min(1120px, calc(100% - 96px)); margin: 0 auto; padding: 26px 0 22px; }
 .page-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: 22px; }
 .eyebrow { font-size: 10px; letter-spacing: .21em; margin: 0 0 9px; color: #65766b; }
 h1 { font: normal clamp(30px, 3vw, 47px)/1.05 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; margin: 0; }

@@ -73,13 +73,13 @@ function getGardenWidth() {
 }
 
 function getGardenHeight() {
-  return min(760, max(getGardenWidth() < 650 ? 440 : 460, windowHeight * 0.68));
+  return min(760, max(getGardenWidth() < 650 ? 440 : 520, windowHeight * 0.72));
 }
 
 function updateCastleLayout() {
   // The bottom-centre anchor prevents breathing from moving the tower's base.
-  let castleHeight = height * 0.73;
-  castle.setLayout(width * 0.5, height * 0.81, castleHeight / castle.rows);
+  let castleHeight = height * 0.78;
+  castle.setLayout(width * 0.5, height * 0.84, castleHeight / castle.rows);
 }
 
 function drawLandscape(palette, horizon) {

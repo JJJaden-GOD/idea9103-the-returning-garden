@@ -134,7 +134,7 @@ class Castle {
   display(palette, breathScale, lightAmount) {
     this.breathScale = breathScale;
     push();
-    translate(this.centreX, this.baseY);
+    translate(round(this.centreX), round(this.baseY));
     scale(breathScale);
     noStroke();
     for (let row = 0; row < this.rows; row++) {
@@ -144,8 +144,11 @@ class Castle {
           let pixelColour = palette[this.colourKeys[token]];
           if (token === 'D') pixelColour = lerpColor(palette.door, palette.gold, lightAmount);
           fill(pixelColour);
-          rect((column - this.columns / 2) * this.unit,
-            (row - this.rows) * this.unit, this.unit + 0.05, this.unit + 0.05);
+          let left = round((column - this.columns / 2) * this.unit);
+          let right = round((column + 1 - this.columns / 2) * this.unit);
+          let top = round((row - this.rows) * this.unit);
+          let bottom = round((row + 1 - this.rows) * this.unit);
+          rect(left, top, right - left + 0.15, bottom - top + 0.15);
         }
       }
     }
