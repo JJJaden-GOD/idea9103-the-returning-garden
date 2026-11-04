@@ -99,13 +99,22 @@ The following details support the course-based visual mechanisms. They are expla
 | Canvas `.parent()`/`.elt`, `pixelDensity()`, `frameRate()` and `cursor()` | Place the canvas within the page, set its accessible attributes, keep its backing density predictable, request a target frame rate and provide pointer feedback. |
 | Audio readiness and promise callbacks | Guard missing or unloaded sound, request playback permission after a user gesture, and clear the pending state if the request fails so a retry remains possible. Separate loop mode sets the loaded track to repeat. |
 | Browser state and accessibility | Update action names through `aria-label` and `title`, progress width, error feedback, disabled controls and pressed states. Preserve the inline SVG children instead of replacing button text. Space on focused buttons keeps its normal action. |
-| Additional CSS and local font | Use CSS Grid for the centred artwork and side columns, layered gradients, custom properties and `@font-face`. Inline SVG icons form the toolbar; the p5.js tower and scene remain rectangle drawings. |
+| Additional CSS and local font | Use CSS Grid for the centred artwork and side columns, layered gradients and `@font-face`. Inline SVG icons form the toolbar; the p5.js tower and scene remain rectangle drawings. |
 
 The API sources are the [p5.js reference](https://p5js.org/reference/) and [MDN web documentation](https://developer.mozilla.org/en-US/docs/Web). Specific reference links are also retained in the source comments. The [course-to-code audit](docs/COURSE_CODE_AUDIT.md) distinguishes demonstrated ideas, original applications and supplementary APIs. The separate Python/NumPy audio synthesis is an offline asset-production tool, not a classroom p5.js implementation or a process executed by the browser.
 
 ## Mechanic ownership
 
 This is an individual project by **ZIQIAN LI**. I am responsible for the creative direction and all four mechanics: time-based change, Perlin noise and randomness, audio, and user input. AI assistance with implementation and documentation is disclosed below.
+
+| Mechanic | Responsible author | Main script | Behaviour and creative purpose |
+|---|---|---|---|
+| Time-based | ZIQIAN LI | `time-mechanic.js` | Moves through Paradise, Earth, Hell and Return, sharing colour and motif transitions across the scene. The cycle gives the work a descent and recovery rather than a collection of separate screens. |
+| Perlin noise and randomness | ZIQIAN LI | `noise-mechanic.js` | Random initial cloud properties create differences between instances; continuous noise produces slow organic drift. This adds life to the quiet setting while keeping the tower readable. |
+| Audio | ZIQIAN LI | `audio-mechanic.js` | Volume controls a visible base scale and measured music amplitude adds breathing and doorway light. The architectural form responds like a living structure; bounded scaling keeps it within the frame. |
+| User input | ZIQIAN LI | `input-mechanic.js` | Clicking the running tower or pressing E returns the same timeline to Earth. The visitor can interrupt the descent and then let the cycle continue; the main sketch also coordinates pause, sound and volume controls. |
+
+The four responsibilities belong to one author. The main `sketch.js` integrates their scripts, and `world-details.js` draws the environmental symbols using the shared clock. Pause and volume controls make the experience inspectable without introducing a competing timeline.
 
 ## File structure
 
