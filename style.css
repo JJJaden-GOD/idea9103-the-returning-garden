@@ -1,0 +1,57 @@
+:root {
+  color-scheme: light;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #253c38;
+  background: #f6f5ee;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.garden-page { width: min(1440px, calc(100% - 96px)); margin: 0 auto; padding: 31px 0 22px; }
+.page-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: 22px; }
+.eyebrow { font-size: 10px; letter-spacing: .21em; margin: 0 0 9px; color: #65766b; }
+h1 { font: normal clamp(30px, 3vw, 47px)/1.05 Georgia, 'Times New Roman', serif; letter-spacing: -.035em; margin: 0; }
+.art-reference { font: 12px/1.7 Georgia, 'Times New Roman', serif; text-align: right; margin: 0 1px 2px; }
+.art-reference span { color: #7b867a; font-style: italic; }
+.artwork { position: relative; overflow: hidden; border: 1px solid #c6d0c3; background: #dce8de; }
+#canvas-host { width: 100%; }
+canvas { display: block; max-width: 100%; touch-action: manipulation; }
+.stage-caption { position: absolute; top: 24px; left: 27px; display: flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .17em; pointer-events: none; z-index: 1; color: var(--caption-colour, #415e54); }
+#phase-number { opacity: .55; padding-right: 12px; border-right: 1px solid currentColor; }
+#paused-label { font-size: 8px; letter-spacing: .12em; opacity: .7; }
+#paused-label[hidden] { display: none; }
+.stage-message { position: absolute; bottom: 15px; width: 100%; text-align: center; margin: 0; color: var(--caption-colour, #415e54); font: italic 13px/1.4 Georgia, 'Times New Roman', serif; pointer-events: none; }
+.experience-controls { display: flex; justify-content: space-between; align-items: center; gap: 45px; margin-top: 21px; }
+.journey { max-width: 540px; flex: 1; }
+.journey-track { height: 2px; background: #d9ddd2; position: relative; }
+.journey-track::after { content: ''; position: absolute; inset: -3px 0; background: linear-gradient(to right, transparent 24.7%, #f6f5ee 24.7% 25.3%, transparent 25.3% 49.7%, #f6f5ee 49.7% 50.3%, transparent 50.3% 74.7%, #f6f5ee 74.7% 75.3%, transparent 75.3%); }
+#cycle-progress { display: block; height: 2px; width: 0%; background: #3a6658; }
+.journey-labels { display: flex; margin-top: 10px; justify-content: space-between; font-size: 10px; letter-spacing: .05em; color: #8b9488; }
+.journey-labels .current { color: #2b5144; }
+.buttons { display: flex; gap: 9px; flex-wrap: wrap; }
+button { font: 11px Arial, Helvetica, sans-serif; letter-spacing: .025em; cursor: pointer; border: 1px solid #ccd3c7; padding: 12px 17px; color: #355448; background: transparent; min-height: 40px; transition: background .2s, border-color .2s; }
+button:hover:not(:disabled) { background: #e9ece2; border-color: #869c88; }
+button:focus-visible { outline: 2px solid #bc6550; outline-offset: 3px; }
+button.primary { color: #fbfaf0; background: #365c4e; border-color: #365c4e; min-width: 132px; }
+button.primary:hover { background: #284d40; }
+button.primary span { margin-left: 12px; }
+button:disabled { cursor: default; opacity: .4; }
+.page-footer { display: flex; justify-content: space-between; gap: 25px; margin-top: 18px; font-size: 11px; line-height: 1.6; color: #6a796c; }
+.page-footer p { margin: 0; }
+.keyboard-hint { white-space: nowrap; color: #3c5749; }
+.keyboard-hint span { color: #859080; font-size: 10px; }
+.audio-note { font-size: 10px; color: #879181; margin: 7px 0 0; }
+@media (max-width: 760px) {
+  .garden-page { width: calc(100% - 32px); padding-top: 23px; }
+  .page-heading { gap: 15px; padding-bottom: 18px; }
+  .art-reference { font-size: 10px; }
+  .art-reference span { display: none; }
+  .eyebrow { font-size: 8px; letter-spacing: .14em; }
+  .experience-controls { flex-direction: column; align-items: stretch; gap: 18px; margin-top: 18px; }
+  .journey { width: 100%; max-width: none; }
+  .buttons { justify-content: space-between; gap: 5px; }
+  button { padding: 11px 13px; }
+  .page-footer { flex-direction: column; gap: 5px; margin-top: 14px; }
+  .stage-caption { left: 18px; top: 18px; }
+  .stage-message { font-size: 11px; bottom: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { button { transition: none; } }
