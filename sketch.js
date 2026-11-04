@@ -184,7 +184,9 @@ function updateInterface() {
 function updateProgress() {
   document.getElementById('cycle-progress').style.width = worldClock.cycleProgress * 100 + '%';
   document.getElementById('cycle-track').setAttribute('aria-valuenow', String(floor(worldClock.cycleProgress * 60)));
-  let darkPhase = worldClock.phaseIndex === 2 || worldClock.phaseIndex === 3 && worldClock.phaseProgress < 0.5;
+  let darkPhase = worldClock.phaseIndex === 2 ||
+    worldClock.phaseIndex === 1 && worldClock.phaseProgress > 0.85 ||
+    worldClock.phaseIndex === 3 && worldClock.phaseProgress < 0.5;
   document.querySelector('.artwork').style.setProperty('--caption-colour', darkPhase ? '#d6c9b6' : '#415e54');
 }
 

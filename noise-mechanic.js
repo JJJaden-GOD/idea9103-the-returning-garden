@@ -42,7 +42,8 @@ class CloudSystem {
     // Limit a delayed frame so switching tabs does not advance the sky abruptly.
     let seconds = constrain(deltaSeconds, 0, 0.1);
     let stage = constrain(phaseIndex, 0, 3);
-    let desiredSpeed = 0.7 + stage * 0.15;
+    const stageSpeeds = [0.7, 0.85, 1.0, 0.55];
+    let desiredSpeed = stageSpeeds[stage];
     this.phaseSpeed = lerp(this.phaseSpeed, desiredSpeed, seconds * 0.8);
 
     for (let i = 0; i < this.clouds.length; i++) {
