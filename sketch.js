@@ -167,20 +167,28 @@ function updateInterface() {
   document.getElementById('phase-number').textContent = '0' + (worldClock.phaseIndex + 1);
   document.getElementById('phase-name').textContent = worldClock.label.toUpperCase();
   document.getElementById('paused-label').hidden = !worldClock.paused;
-  document.getElementById('enter-button').textContent = sceneStarted ? 'Restart cycle' : 'Enter garden ↗';
+  // Keep the SVG children intact; state changes update their labels and selectors.
+  let enterButton = document.getElementById('enter-button');
+  let enterLabel = sceneStarted ? 'Restart cycle' : 'Enter garden';
+  enterButton.setAttribute('aria-label', enterLabel);
+  enterButton.setAttribute('title', enterLabel);
   let soundButton = document.getElementById('sound-button');
-  soundButton.textContent = audioMechanic.playing ? 'Sound on' : 'Enable sound';
+  let soundLabel = audioMechanic.playing ? 'Turn sound off' : 'Turn sound on';
+  soundButton.setAttribute('aria-label', soundLabel);
+  soundButton.setAttribute('title', soundLabel);
   soundButton.setAttribute('aria-pressed', String(audioMechanic.playing));
   let pauseButton = document.getElementById('pause-button');
   pauseButton.disabled = !sceneStarted;
-  pauseButton.textContent = worldClock.paused ? 'Resume cycle' : 'Pause cycle';
+  let pauseLabel = worldClock.paused ? 'Resume cycle' : 'Pause cycle';
+  pauseButton.setAttribute('aria-label', pauseLabel);
+  pauseButton.setAttribute('title', pauseLabel);
   pauseButton.setAttribute('aria-pressed', String(worldClock.paused));
   let audioNote = document.getElementById('audio-note');
   audioNote.hidden = soundReady;
   audioNote.textContent = soundReady ? '' : 'Sound unavailable. The garden can continue silently.';
   if (lastAudioStatus.indexOf('error') !== -1 || lastAudioStatus.indexOf('blocked') !== -1) {
     audioNote.hidden = false;
-    audioNote.textContent = 'Sound could not start. Select Enable sound to retry.';
+    audioNote.textContent = 'Sound could not start. Use the sound button to retry.';
   }
   let labels = document.querySelectorAll('.journey-labels span');
   for (let i = 0; i < labels.length; i++) labels[i].classList.toggle('current', i === worldClock.phaseIndex);

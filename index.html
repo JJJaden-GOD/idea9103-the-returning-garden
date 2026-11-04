@@ -15,28 +15,42 @@
       <h1>The Returning Garden</h1>
     </header>
 
-    <section class="artwork" aria-label="An interactive garden moving between Paradise, Earth, Hell and Return">
-      <div class="stage-caption">
-        <span id="phase-number">01</span>
-        <span id="phase-name" aria-live="polite">PARADISE</span>
-        <span id="paused-label" hidden>PAUSED</span>
-      </div>
-      <div id="canvas-host"></div>
-    </section>
+    <div class="garden-stage">
+      <div class="stage-spacer" aria-hidden="true"></div>
+      <section class="artwork" aria-label="An interactive garden moving between Paradise, Earth, Hell and Return">
+        <div class="stage-caption">
+          <span id="phase-number">01</span>
+          <span id="phase-name" aria-live="polite">PARADISE</span>
+          <span id="paused-label" hidden>PAUSED</span>
+        </div>
+        <div id="canvas-host"></div>
+      </section>
+      <aside class="control-sidebar" aria-label="Garden controls">
+        <div class="buttons">
+          <!-- AI assistance: Codex helped draw these local SVG controls.
+               Button names remain available on hover and to assistive tools.
+               Path reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path -->
+          <button id="enter-button" class="primary" type="button" aria-label="Enter garden" title="Enter garden">
+            <svg class="icon-restart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19.5 10a7.7 7.7 0 1 0-.9 6.2M19.5 4.5V10H14"/></svg>
+          </button>
+          <button id="sound-button" type="button" aria-label="Turn sound on" title="Turn sound on" aria-pressed="false">
+            <svg class="icon-sound-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6.5 9H3v6h3.5l4.5 4ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>
+            <svg class="icon-sound-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 5 6.5 9H3v6h3.5l4.5 4Zm5 4 5 6m0-6-5 6"/></svg>
+          </button>
+          <button id="pause-button" type="button" aria-label="Pause cycle" title="Pause cycle" aria-pressed="false" disabled>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14M16 5v14"/></svg>
+            <svg class="icon-resume" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="solid-icon" d="M8 5.5 19 12 8 18.5Z"/></svg>
+          </button>
+        </div>
+      </aside>
+    </div>
 
-    <section class="experience-controls" aria-label="Garden controls">
-      <div class="journey">
-        <div class="journey-track" id="cycle-track" role="progressbar" aria-label="Position in the 60 second world cycle" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
-          <span id="cycle-progress"></span>
-        </div>
-        <div class="journey-labels" aria-hidden="true">
-          <span class="current">Paradise</span><span>Earth</span><span>Hell</span><span>Return</span>
-        </div>
+    <section class="journey" aria-label="World cycle">
+      <div class="journey-track" id="cycle-track" role="progressbar" aria-label="Position in the 60 second world cycle" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0">
+        <span id="cycle-progress"></span>
       </div>
-      <div class="buttons">
-        <button id="enter-button" class="primary" type="button">Enter garden <span aria-hidden="true">↗</span></button>
-        <button id="sound-button" type="button" aria-pressed="false">Enable sound</button>
-        <button id="pause-button" type="button" aria-pressed="false" disabled>Pause cycle</button>
+      <div class="journey-labels" aria-hidden="true">
+        <span class="current">Paradise</span><span>Earth</span><span>Hell</span><span>Return</span>
       </div>
     </section>
 

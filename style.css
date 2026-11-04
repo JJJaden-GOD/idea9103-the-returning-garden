@@ -64,13 +64,17 @@ body::after {
   filter: blur(25px);
 }
 .garden-page {
-  width: min(1120px, calc(100% - 96px));
+  width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 28px 0 25px;
+  padding: 18px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.page-heading { padding-bottom: 21px; }
+.page-heading { text-align: center; }
 h1 {
-  font-size: clamp(29px, 3.1vw, 44px);
+  font-size: clamp(30px, 2.7vw, 40px);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -.035em;
@@ -78,6 +82,19 @@ h1 {
   color: #f2e8f6;
   text-shadow: 0 0 34px rgba(187, 129, 204, .12);
 }
+.garden-stage {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1120px) 88px;
+  column-gap: 24px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+}
+/* Equal side columns keep the artwork, title and progress centred on the page.
+   Additional layout reference: https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns */
+.stage-spacer { width: 88px; }
+.control-sidebar { display: flex; justify-content: center; align-items: center; }
 .artwork {
   position: relative;
   overflow: hidden;
@@ -106,30 +123,21 @@ canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
 #phase-number { opacity: .55; padding-right: 12px; border-right: 1px solid currentColor; }
 #paused-label { font-size: 8px; letter-spacing: .12em; opacity: .7; }
 #paused-label[hidden] { display: none; }
-.experience-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 42px;
-  margin-top: 23px;
-}
-.journey { max-width: 540px; flex: 1; }
-.journey-track { height: 3px; background: #302037; position: relative; }
-.journey-track::after {
-  content: "";
-  position: absolute;
-  inset: -3px 0;
-  background: linear-gradient(to right,
-    transparent 24.7%, #090a15 24.7% 25.3%,
-    transparent 25.3% 49.7%, #090a15 49.7% 50.3%,
-    transparent 50.3% 74.7%, #090a15 74.7% 75.3%, transparent 75.3%);
+.journey { width: min(480px, 100%); margin: 0 auto; }
+.journey-track {
+  height: 9px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #2d2334;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3);
 }
 #cycle-progress {
   display: block;
-  height: 3px;
+  height: 100%;
+  border-radius: 999px;
   width: 0%;
-  background: linear-gradient(90deg, #ba78a7, #caa1db 70%, #b1a3e5);
-  box-shadow: 0 0 12px rgba(203, 135, 204, .28);
+  background: #c5a0ce;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
 }
 .journey-labels {
   display: flex;
@@ -140,7 +148,16 @@ canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
   color: #8e809f;
 }
 .journey-labels .current { color: #ead1ef; font-weight: 500; }
-.buttons { display: flex; gap: 9px; flex-wrap: wrap; }
+.buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 13px;
+  border: 1px solid rgba(160, 118, 171, .16);
+  border-radius: 30px;
+  background: rgba(19, 13, 28, .6);
+}
 button {
   font-family: inherit;
   font-size: 11px;
@@ -149,9 +166,13 @@ button {
   letter-spacing: .03em;
   cursor: pointer;
   border: 1px solid #644467;
-  border-radius: 9px;
-  padding: 13px 17px;
-  min-height: 43px;
+  border-radius: 18px;
+  padding: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #e6d2ee;
   background: linear-gradient(135deg, rgba(57, 31, 69, .9), rgba(28, 19, 43, .96));
   box-shadow: inset 0 1px 0 rgba(246, 214, 255, .065), 0 4px 13px rgba(0, 0, 0, .2);
@@ -176,7 +197,6 @@ button.primary {
   color: #2a1337;
   background: linear-gradient(115deg, #f0b9d7, #d1a7e5 52%, #b29be7);
   border-color: #efc9ed;
-  min-width: 132px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 7px 24px rgba(168, 83, 158, .19);
 }
 button.primary:hover:not(:disabled) {
@@ -185,9 +205,15 @@ button.primary:hover:not(:disabled) {
   border-color: #ffe2f6;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 9px 28px rgba(190, 105, 182, .26);
 }
-button.primary span { margin-left: 10px; }
+button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+button .solid-icon { fill: currentColor; stroke: none; }
+button .icon-sound-on, button .icon-resume { display: none; }
+#sound-button[aria-pressed="true"] .icon-sound-off { display: none; }
+#sound-button[aria-pressed="true"] .icon-sound-on { display: block; }
+#pause-button[aria-pressed="true"] .icon-pause { display: none; }
+#pause-button[aria-pressed="true"] .icon-resume { display: block; }
 button:disabled { cursor: default; opacity: .36; box-shadow: none; transform: none; }
-.audio-note { font-size: 11px; line-height: 1.7; color: #d2a8ca; margin: 12px 0 0; }
+.audio-note { font-size: 11px; line-height: 1.7; color: #d2a8ca; margin: 0; text-align: center; }
 .audio-note[hidden] { display: none; }
 noscript { display: block; margin-top: 14px; color: #efd0df; font-size: 12px; }
 @media (prefers-reduced-motion: reduce) {
