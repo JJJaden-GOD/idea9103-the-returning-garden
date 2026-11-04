@@ -2,7 +2,7 @@
 
 **IDEA9103 Creative Coding Final — ZIQIAN LI**
 
-The Returning Garden is an interactive p5.js work inspired by the blue tower in Hieronymus Bosch's *The Garden of Earthly Delights*. A building redrawn from small rectangles remains at the centre of a sixty-second journey through Paradise, Earth, Hell and Return. A pale celestial garden, a warm living landscape and a dark volcanic world give the stages distinct identities. Drifting clouds and an optional ambient soundtrack animate the scene. Clicking the tower brings the world back to Earth and restarts that part of the journey.
+The Returning Garden is an interactive p5.js work inspired by the blue tower in Hieronymus Bosch's *The Garden of Earthly Delights*. A building redrawn from small rectangles remains at the centre of a sixty-second journey through Paradise, Earth, Hell and Return. A pale celestial garden, a warm living landscape and a dark volcanic world give the stages distinct identities. Drifting clouds and an optional ambient soundtrack animate the scene. While running, clicking the tower brings the world back to Earth. A volume slider changes the tower's base size, with music adding a breathing response.
 
 ![The running Paradise scene](docs/screenshots/paradise.png)
 
@@ -11,7 +11,7 @@ The Returning Garden is an interactive p5.js work inspired by the blue tower in 
 1. Download or clone the complete repository, keeping its folders intact.
 2. Open the project folder in Visual Studio Code.
 3. Open `index.html` with **Live Server**. Use the local HTTP address it opens in your browser.
-4. Select the upper **circular-arrow icon** to enter the garden. Select the **speaker icon** to hear the soundtrack and see the tower breathe. Hover over an icon to see its action name.
+4. Select the upper **circular-arrow icon** to enter. Use the **speaker icon** for optional sound and the slider beneath it for volume and tower size. Hover over an icon to see its action name.
 
 No build command, package installation or external CDN is required. The p5.js and p5.sound files are included in `libraries/`, and the soundtrack is stored locally. Use a local web server rather than opening the HTML through a `file://` address, so the browser can load the audio asset correctly.
 
@@ -19,13 +19,14 @@ No build command, package installation or external CDN is required. The p5.js an
 
 | Action | Result |
 |---|---|
-| Upper circular-arrow icon | Starts the visual journey. Its hover and accessible name changes from Enter garden to Restart cycle; the arrow icon stays the same. |
-| Click a visible pixel of the tower, or press **E** | Moves the same world timeline to the beginning of Earth. Earth then continues towards Hell and Return. Repeating the action restarts Earth. |
-| **R**, or the circular-arrow icon after entry | Restarts the world timeline at Paradise. It does not rewind the soundtrack or generate a new set of clouds. |
-| **P**, or the lower bars/play icon | Pauses or resumes world time, including light-dust and ember motion. The icon changes from pause bars to a play triangle when paused. Clouds and playing audio can continue. |
-| **Space**, or the middle speaker icon | Plays or pauses the optional soundtrack. Its state changes between muted and sounding speaker icons, with the action name Turn sound on or Turn sound off. The sound button can also start the garden. Shortcuts become active after entry. |
+| Upper circular-arrow icon | Starts the journey, then becomes Restart cycle. The icon stays the same. Restart is disabled during global pause. |
+| Click a visible tower pixel, or **E** | While running, moves the same timeline to the start of Earth. Repeating the action restarts Earth. Ignored while paused. |
+| **R**, or the arrow after entry | While running, restarts world time at Paradise without rewinding music or regenerating clouds. Ignored while paused. |
+| **P**, or the lower bars/play icon | Pauses **all artwork animation and music**, then resumes from the held state. The action names are Pause garden and Resume garden. |
+| **Space** after entry, or the speaker icon | Changes the sound preference. While paused, this stays silent and determines whether music resumes later. The speaker button can also start the garden. |
+| Slider beneath the speaker | Sets volume from 0% to 100%, initially 60%. It also changes the tower's base size even with sound off. Changes made while paused affect the picture after resume. |
 
-The three icons sit vertically beside the artwork. Their action names are available on hover and through accessibility labels. Click outside the tower's visible cells to leave the timeline unchanged. Click empty canvas space if a shortcut needs focus. Space on a focused button activates that button normally. The phase label and continuous progress pill show world time.
+The three icons sit vertically beside the artwork. Their names are available on hover and through accessibility labels. The speaker icon shows the enabled preference; its accessible description distinguishes playing, zero volume and global pause. The continuous progress pill and world names below it show the journey; there is no caption over the canvas. Click empty canvas space if a shortcut needs focus. Space on a focused button activates it normally, and the focused slider retains its native keyboard controls.
 
 Sound starts only after a user action. This project plays a supplied audio file and **does not request microphone access**. If the file cannot load, the visual work remains available and the page displays an audio message.
 
@@ -49,7 +50,7 @@ Each palette gives semantic names to the sky, water, clouds and building colours
 
 `WorldDetails` in `world-details.js` draws the environmental symbols with small rectangles. Paradise has a hollow ivory halo, fourteen light specks and two floating terraces. Earth has a warm sun and four clusters of fruit shrubs and flowers. Hell has a crimson moon, six broken crags, lava cracks and eighteen rising embers. The symbols sit mainly beside the central tower.
 
-`WorldClock.worldWeights` stores three opacity targets using the same endpoint worlds and blend amount as the palettes. `WorldDetails.update()` eases towards those targets, so motifs crossfade along with the colours. `drawDisc()` uses nested loops and distance tests for the ring, sun and moon; the other motifs combine rectangle recipes and small fixed loops. Dust and embers read the existing cycle progress rather than starting another clock. Their motion pauses with world time.
+`WorldClock.worldWeights` stores three opacity targets using the same endpoint worlds and blend amount as the palettes. `WorldDetails.update()` eases towards those targets, so motifs crossfade with the colours. `drawDisc()` uses loops and distance tests for the halo, sun and moon; other motifs combine rectangle recipes and fixed loops. Global pause holds these weights and all artwork motion, including cloud drift, light dust, embers, water, reflection and glow.
 
 ### Randomness and Perlin noise
 
@@ -57,7 +58,17 @@ Each palette gives semantic names to the sky, water, clouds and building colours
 
 ### Audio amplitude
 
-`AudioMechanic` in `audio-mechanic.js` connects a `p5.Amplitude` analyser to the local WAV. Its level is clamped, adjusted for the track's quiet baseline, and mapped to a target scale. `lerp()` smooths the response, and the final scale is limited to **0.985–1.035**. The bottom-centre anchor keeps the tower's base in place. Audio level also contributes to a restrained doorway glow. Pausing audio smoothly returns the scale towards 1.
+`AudioMechanic` connects a `p5.Amplitude` analyser to the local WAV after its volume gain. `createSlider(0, 1, 0.6, 0.01)` supplies volume; `setVolume()` writes the changed gain to the sound file. Volume sets a visible base size even when sound is off, and measured RMS adds a smaller breathing response:
+
+```text
+energy = constrain(postGainRMS / 0.24, 0, 1)
+targetScale = 0.82 + 0.24 * volume + 0.10 * energy
+scale = lerp(scale, targetScale, 0.10), bounded to 0.82–1.16
+```
+
+The analyser already includes the volume gain, so its level is not multiplied by volume again. The tower's unscaled height is 68% of the canvas, anchored at 84% from the top. Its base remains in place as size changes; amplitude also contributes to the doorway glow.
+
+`enabled` records the sound preference, `playing` records actual playback, and `globalPaused` holds the artwork and audio. Global pause calls `SoundFile.pause()` to preserve the music cursor and holds the last level and scale. Resume plays from that cursor only if sound is enabled. A sound toggle during pause changes the preference without playing; volume changes during pause become visible after resume. Pending browser-start callbacks recheck these flags so they cannot undo a later pause.
 
 The original soundtrack was generated offline from mathematical sine-wave tones with Codex assistance. It is a **60-second, mono, 16-bit PCM WAV at 22,050 Hz**, using sustained harmonies, quiet bells, periodic amplitude swells and circular echo tails. No external recording, sampled instrument, speech or downloaded song was used. The browser plays and analyses this file; it does not run the synthesis process.
 
@@ -65,15 +76,17 @@ The original soundtrack was generated offline from mathematical sine-wave tones 
 
 `input-mechanic.js` handles pointer and keyboard actions. `Castle.contains()` maps the pointer back into the current scaled grid, so transparent corners are not clickable. An intervention calls `WorldClock.enterEarth()`, which repositions the clock's `startedAt` value. The automatic update reads that same clock on the next frame, preserving the user's choice. There is no second timer that immediately changes it back.
 
+`toggleGardenPause()` coordinates the clock with `AudioMechanic.setGlobalPaused()`. While paused, the main draw loop stops advancing the cloud, colour, world-detail, glow and audio-response state. Pointer/E interventions and R/restart are blocked, while sound configuration remains available.
+
 ### Drawing and desktop layout
 
 `Castle.paintRect()`, `buildSphere()` and `buildTower()` construct the grid once. Distance checks choose cells for the sphere and central ring; nested loops turn each occupied cell into a rectangle. The landscape, clouds, water marks and reflection use a restrained set of shapes and shared palette values.
 
 `preload()` loads the audio, `setup()` creates the canvas and class instances, and `draw()` coordinates updates and rendering. `windowResized()` resizes the canvas and recalculates the tower's unit size when the desktop browser window changes. `pixelDensity(1)`, rounded cell edges and small overlaps reduce gaps between the drawn pixels.
 
-The desktop interface uses a dark galaxy background, lilac icon buttons and the angular Oxanium typeface. The title and artwork share the viewport centre; equal 88-pixel side columns balance the vertical controls at right. A continuous, rounded 9-pixel progress pill sits at the bottom centre. Inline SVG paths use a 24-by-24 `viewBox`; CSS selects the visible icon through `aria-pressed`. These path and state details extend the taught SVG foundations. Static CSS gradients create stars and haze. Full instructions stay in this README and the Word explanation; audio guidance appears only on failure.
+The desktop interface uses a dark galaxy background, lilac icon buttons and Oxanium. Equal 88-pixel side columns centre the title and artwork; the volume slider sits beneath the speaker at right. A continuous rounded 9-pixel progress pill sits at bottom centre. No phase caption overlays the artwork. Inline SVG paths use a 24-by-24 `viewBox`, with states selected through `aria-pressed`; those details extend the taught SVG foundations. Instructions stay in this README and Word; audio guidance appears only on failure.
 
-These structures build on the course's arrays, loops, functions, classes, coordinate transforms, `random()`, `noise()`, `lerp()`, `lerpColor()` and p5.sound examples. Browser-specific engineering also supports the presentation: promise callbacks handle audio permission and failure, DOM and accessibility attributes support controls, and additional CSS and a local font style the page. Those supporting details extend the classroom examples; the visual mechanisms use the drawing and animation techniques studied in the course.
+These structures build on the course's arrays, loops, functions, classes, transforms, `random()`, `noise()`, interpolation and p5.sound examples. Week 10 explicitly demonstrates `createSlider()` with `setVolume(slider.value())`; mapping that control and amplitude to tower size is this project's application. Promise callbacks handle browser audio permission and failure, with additional DOM/accessibility and CSS supporting the presentation.
 
 ### Supplementary implementation details
 
