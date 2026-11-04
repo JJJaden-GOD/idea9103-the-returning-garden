@@ -15,6 +15,7 @@ h1 { font: normal clamp(30px, 3vw, 47px)/1.05 Georgia, 'Times New Roman', serif;
 .artwork { position: relative; overflow: hidden; border: 1px solid #c6d0c3; background: #dce8de; }
 #canvas-host { width: 100%; }
 canvas { display: block; max-width: 100%; touch-action: manipulation; }
+canvas:focus-visible { outline: 2px solid #bc6550; outline-offset: -4px; }
 .stage-caption { position: absolute; top: 24px; left: 27px; display: flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: .17em; pointer-events: none; z-index: 1; color: var(--caption-colour, #415e54); }
 #phase-number { opacity: .55; padding-right: 12px; border-right: 1px solid currentColor; }
 #paused-label { font-size: 8px; letter-spacing: .12em; opacity: .7; }

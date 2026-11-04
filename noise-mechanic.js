@@ -18,7 +18,9 @@ class CloudSystem {
         startX = random(0.78, 0.89);
       }
 
-      let startY = random(0.16, 0.48);
+      // Separate vertical bands keep the two left clouds from merging together.
+      let verticalBand = i % 3;
+      let startY = random(0.14 + verticalBand * 0.16, 0.20 + verticalBand * 0.16);
       let offset = random(100, 1000);
       this.clouds.push({
         side: side,

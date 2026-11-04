@@ -13,6 +13,7 @@ let interventionGlow = 0;
 let scenePalette = {};
 let lastPhase = -1;
 let lastSoundPlaying = false;
+let lastAudioStatus = '';
 
 const paletteKeys = ['skyTop', 'skyBottom', 'hill', 'water', 'waterLight',
   'cloud', 'cloudShadow', 'navy', 'blue', 'lightBlue', 'coral', 'coralLight',
@@ -29,6 +30,7 @@ function setup() {
   canvas.parent('canvas-host');
   canvas.elt.setAttribute('role', 'img');
   canvas.elt.setAttribute('aria-label', 'A blue pixel tower above a quiet lake. Click the tower or press E to return the world to Earth.');
+  canvas.elt.setAttribute('tabindex', '0');
   pixelDensity(1);
   frameRate(60);
   noStroke();
@@ -65,7 +67,7 @@ function draw() {
 
   cursor(sceneStarted && castle.contains(mouseX, mouseY) ? HAND : ARROW);
   updateProgress();
-  if (worldClock.phaseIndex !== lastPhase || audioMechanic.playing !== lastSoundPlaying) updateInterface();
+  if (worldClock.phaseIndex !== lastPhase || audioMechanic.playing !== lastSoundPlaying || audioMechanic.getStatus() !== lastAudioStatus) updateInterface();
 }
 
 function getGardenWidth() {
@@ -152,6 +154,7 @@ function connectControls() {
 function updateInterface() {
   lastPhase = worldClock.phaseIndex;
   lastSoundPlaying = audioMechanic.playing;
+  lastAudioStatus = audioMechanic.getStatus();
   const messages = [
     'Everything begins in stillness.',
     'A world alive with small changes.',
@@ -162,7 +165,7 @@ function updateInterface() {
   document.getElementById('phase-name').textContent = worldClock.label.toUpperCase();
   document.getElementById('stage-message').textContent = sceneStarted ? messages[worldClock.phaseIndex] : 'A small world, waiting to begin.';
   document.getElementById('paused-label').hidden = !worldClock.paused;
-  document.getElementById('enter-button').textContent = sceneStarted ? 'Restart garden' : 'Enter garden ↗';
+  document.getElementById('enter-button').textContent = sceneStarted ? 'Restart cycle' : 'Enter garden ↗';
   let soundButton = document.getElementById('sound-button');
   soundButton.textContent = audioMechanic.playing ? 'Sound on' : 'Enable sound';
   soundButton.setAttribute('aria-pressed', String(audioMechanic.playing));
@@ -171,6 +174,9 @@ function updateInterface() {
   pauseButton.textContent = worldClock.paused ? 'Resume cycle' : 'Pause cycle';
   pauseButton.setAttribute('aria-pressed', String(worldClock.paused));
   document.getElementById('audio-note').textContent = soundReady ? 'Sound is optional. Enable it to see the tower breathe.' : 'The garden is available without sound. The audio file could not be loaded.';
+  if (lastAudioStatus.indexOf('error') !== -1 || lastAudioStatus.indexOf('blocked') !== -1) {
+    document.getElementById('audio-note').textContent = 'Sound could not start. Select Enable sound to retry.';
+  }
   let labels = document.querySelectorAll('.journey-labels span');
   for (let i = 0; i < labels.length; i++) labels[i].classList.toggle('current', i === worldClock.phaseIndex);
 }
@@ -188,7 +194,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  if (document.activeElement.tagName === 'BUTTON') return;
+  if (document.activeElement.tagName === 'BUTTON' && key === ' ') return;
   return handleGardenKey();
 }
 
