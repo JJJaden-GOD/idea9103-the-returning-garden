@@ -12,6 +12,7 @@ let worldClock;
 let cloudSystem;
 let worldDetails;
 let audioMechanic;
+let volumeSlider;
 let soundtrack;
 let soundReady = false;
 let sceneStarted = false;
@@ -45,6 +46,13 @@ function setup() {
   cloudSystem = new CloudSystem(3);
   worldDetails = new WorldDetails();
   audioMechanic = new AudioMechanic(soundReady ? soundtrack : null);
+  // Week 10 uses createSlider(), slider.value() and SoundFile.setVolume().
+  volumeSlider = createSlider(0, 1, 0.6, 0.01);
+  volumeSlider.parent('volume-control');
+  volumeSlider.elt.setAttribute('id', 'volume-slider');
+  volumeSlider.elt.setAttribute('aria-label', 'Volume');
+  volumeSlider.elt.setAttribute('aria-valuetext', '60%');
+  volumeSlider.elt.setAttribute('title', 'Volume 60%');
   for (let key of paletteKeys) scenePalette[key] = worldClock.palette[key];
   updateCastleLayout();
   connectControls();
@@ -52,12 +60,20 @@ function setup() {
 }
 
 function draw() {
+  let volume = volumeSlider.value();
+  if (volume !== audioMechanic.volume) {
+    audioMechanic.setVolume(volume);
+    let percentage = round(volume * 100) + '%';
+    volumeSlider.elt.setAttribute('aria-valuetext', percentage);
+    volumeSlider.elt.setAttribute('title', 'Volume ' + percentage);
+    updateInterface();
+  }
   let seconds = min(deltaTime / 1000, 0.1);
-  if (sceneStarted) worldClock.update();
+  if (sceneStarted && !worldClock.paused) worldClock.update();
   audioMechanic.update();
 
   // Easing the shared palette also makes a manual jump to Earth feel gentle.
-  let blend = min(deltaTime / 550, 1);
+  let blend = worldClock.paused ? 0 : min(deltaTime / 550, 1);
   for (let key of paletteKeys) {
     scenePalette[key] = lerpColor(scenePalette[key], worldClock.palette[key], blend);
   }
@@ -65,16 +81,16 @@ function draw() {
   drawLandscape(scenePalette, horizon);
   worldDetails.update(worldClock, blend);
   worldDetails.display(horizon);
-  if (sceneStarted) cloudSystem.update(worldClock.phaseIndex, seconds);
+  if (sceneStarted && !worldClock.paused) cloudSystem.update(worldClock.phaseIndex, seconds);
   cloudSystem.display(scenePalette, horizon);
   drawWater(scenePalette);
 
   let doorwayLight = constrain(audioMechanic.level * 2.0 + interventionGlow * 0.7, 0, 0.75);
   castle.display(scenePalette, audioMechanic.breathScale, doorwayLight);
-  interventionGlow = lerp(interventionGlow, 0, min(deltaTime / 1100, 1));
+  if (!worldClock.paused) interventionGlow = lerp(interventionGlow, 0, min(deltaTime / 1100, 1));
   drawReflection(scenePalette);
 
-  cursor(sceneStarted && castle.contains(mouseX, mouseY) ? HAND : ARROW);
+  cursor(sceneStarted && !worldClock.paused && castle.contains(mouseX, mouseY) ? HAND : ARROW);
   updateProgress();
   if (worldClock.phaseIndex !== lastPhase || audioMechanic.playing !== lastSoundPlaying || audioMechanic.getStatus() !== lastAudioStatus) updateInterface();
 }
@@ -89,7 +105,7 @@ function getGardenHeight() {
 
 function updateCastleLayout() {
   // The bottom-centre anchor prevents breathing from moving the tower's base.
-  let castleHeight = height * 0.78;
+  let castleHeight = height * 0.68;
   castle.setLayout(width * 0.5, height * 0.84, castleHeight / castle.rows);
 }
 
@@ -142,6 +158,18 @@ function startGarden() {
   }
 }
 
+function toggleGardenSound() {
+  audioMechanic.toggle();
+  updateInterface();
+}
+
+function toggleGardenPause() {
+  if (!sceneStarted) return;
+  worldClock.togglePause();
+  audioMechanic.setGlobalPaused(worldClock.paused);
+  updateInterface();
+}
+
 function connectControls() {
   document.getElementById('enter-button').addEventListener('click', function () {
     if (!sceneStarted) startGarden();
@@ -151,12 +179,10 @@ function connectControls() {
   });
   document.getElementById('sound-button').addEventListener('click', function () {
     startGarden();
-    audioMechanic.toggle();
-    updateInterface();
+    toggleGardenSound();
   });
   document.getElementById('pause-button').addEventListener('click', function () {
-    worldClock.togglePause();
-    updateInterface();
+    toggleGardenPause();
   });
 }
 
@@ -164,22 +190,25 @@ function updateInterface() {
   lastPhase = worldClock.phaseIndex;
   lastSoundPlaying = audioMechanic.playing;
   lastAudioStatus = audioMechanic.getStatus();
-  document.getElementById('phase-number').textContent = '0' + (worldClock.phaseIndex + 1);
-  document.getElementById('phase-name').textContent = worldClock.label.toUpperCase();
-  document.getElementById('paused-label').hidden = !worldClock.paused;
   // Keep the SVG children intact; state changes update their labels and selectors.
   let enterButton = document.getElementById('enter-button');
+  enterButton.disabled = sceneStarted && worldClock.paused;
   let enterLabel = sceneStarted ? 'Restart cycle' : 'Enter garden';
   enterButton.setAttribute('aria-label', enterLabel);
   enterButton.setAttribute('title', enterLabel);
   let soundButton = document.getElementById('sound-button');
-  let soundLabel = audioMechanic.playing ? 'Turn sound off' : 'Turn sound on';
+  let soundLabel = audioMechanic.enabled ? 'Turn sound off' : 'Turn sound on';
   soundButton.setAttribute('aria-label', soundLabel);
   soundButton.setAttribute('title', soundLabel);
-  soundButton.setAttribute('aria-pressed', String(audioMechanic.playing));
+  soundButton.setAttribute('aria-pressed', String(audioMechanic.enabled));
+  let soundDescription = 'Sound is off.';
+  if (audioMechanic.playing) soundDescription = audioMechanic.volume === 0 ? 'Sound is playing at zero volume.' : 'Sound is playing.';
+  else if (audioMechanic.enabled && worldClock.paused) soundDescription = 'Sound is paused with the garden.';
+  else if (audioMechanic.enabled) soundDescription = 'Sound is starting.';
+  soundButton.setAttribute('aria-description', soundDescription);
   let pauseButton = document.getElementById('pause-button');
   pauseButton.disabled = !sceneStarted;
-  let pauseLabel = worldClock.paused ? 'Resume cycle' : 'Pause cycle';
+  let pauseLabel = worldClock.paused ? 'Resume garden' : 'Pause garden';
   pauseButton.setAttribute('aria-label', pauseLabel);
   pauseButton.setAttribute('title', pauseLabel);
   pauseButton.setAttribute('aria-pressed', String(worldClock.paused));
@@ -197,10 +226,9 @@ function updateInterface() {
 function updateProgress() {
   document.getElementById('cycle-progress').style.width = worldClock.cycleProgress * 100 + '%';
   document.getElementById('cycle-track').setAttribute('aria-valuenow', String(floor(worldClock.cycleProgress * 60)));
-  let darkPhase = worldClock.phaseIndex === 2 ||
-    worldClock.phaseIndex === 1 && worldClock.phaseProgress > 0.85 ||
-    worldClock.phaseIndex === 3 && worldClock.phaseProgress < 0.5;
-  document.querySelector('.artwork').style.setProperty('--caption-colour', darkPhase ? '#d6c9b6' : '#415e54');
+  let progressDescription = worldClock.label + ', ' + floor(worldClock.cycleProgress * 60) + ' seconds';
+  if (worldClock.paused) progressDescription += ', paused';
+  document.getElementById('cycle-track').setAttribute('aria-valuetext', progressDescription);
 }
 
 function mousePressed() {
@@ -209,6 +237,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
+  if (document.activeElement.tagName === 'INPUT') return;
   if (document.activeElement.tagName === 'BUTTON' && key === ' ') return;
   return handleGardenKey();
 }

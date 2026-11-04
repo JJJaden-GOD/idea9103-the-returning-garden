@@ -106,23 +106,6 @@ h1 {
 #canvas-host { width: 100%; }
 canvas { display: block; max-width: 100%; }
 canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
-.stage-caption {
-  position: absolute;
-  top: 24px;
-  left: 27px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .16em;
-  pointer-events: none;
-  z-index: 1;
-  color: var(--caption-colour, #e5d9ef);
-}
-#phase-number { opacity: .55; padding-right: 12px; border-right: 1px solid currentColor; }
-#paused-label { font-size: 8px; letter-spacing: .12em; opacity: .7; }
-#paused-label[hidden] { display: none; }
 .journey { width: min(480px, 100%); margin: 0 auto; }
 .journey-track {
   height: 9px;
@@ -153,11 +136,20 @@ canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 13px;
+  padding: 13px 9px;
   border: 1px solid rgba(160, 118, 171, .16);
   border-radius: 30px;
   background: rgba(19, 13, 28, .6);
 }
+.sound-control { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.volume-control { width: 64px; height: 18px; display: flex; align-items: center; }
+.volume-control input {
+  width: 64px;
+  margin: 0;
+  accent-color: #d0a5df;
+  cursor: pointer;
+}
+.volume-control input:focus-visible { outline: 2px solid #e7b8e6; outline-offset: 4px; border-radius: 12px; }
 button {
   font-family: inherit;
   font-size: 11px;
