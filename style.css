@@ -87,7 +87,7 @@ h1 {
   box-shadow: 0 20px 65px rgba(0, 0, 0, .38), 0 0 28px rgba(139, 72, 162, .055);
 }
 #canvas-host { width: 100%; }
-canvas { display: block; max-width: 100%; touch-action: manipulation; }
+canvas { display: block; max-width: 100%; }
 canvas:focus-visible { outline: 2px solid #f2bde4; outline-offset: -4px; }
 .stage-caption {
   position: absolute;
@@ -190,23 +190,6 @@ button:disabled { cursor: default; opacity: .36; box-shadow: none; transform: no
 .audio-note { font-size: 11px; line-height: 1.7; color: #d2a8ca; margin: 12px 0 0; }
 .audio-note[hidden] { display: none; }
 noscript { display: block; margin-top: 14px; color: #efd0df; font-size: 12px; }
-@media (max-width: 760px) {
-  .garden-page { width: calc(100% - 32px); padding-top: 24px; }
-  .page-heading { padding-bottom: 18px; }
-  .experience-controls { flex-direction: column; align-items: stretch; gap: 19px; margin-top: 19px; }
-  .journey { width: 100%; max-width: none; }
-  .buttons { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px; }
-  button { padding: 12px 10px; }
-  button.primary { min-width: 0; }
-  .stage-caption { left: 18px; top: 18px; }
-}
-@media (max-width: 560px) {
-  h1 { font-size: clamp(27px, 7vw, 36px); }
-}
-@media (max-width: 420px) {
-  .buttons { grid-template-columns: 1fr 1fr; }
-  .buttons .primary { grid-column: 1 / -1; }
-}
 @media (prefers-reduced-motion: reduce) {
   button { transition: none; }
   button:hover:not(:disabled), button:active:not(:disabled) { transform: none; }

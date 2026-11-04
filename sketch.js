@@ -84,7 +84,7 @@ function getGardenWidth() {
 }
 
 function getGardenHeight() {
-  return min(760, max(getGardenWidth() < 650 ? 440 : 520, windowHeight * 0.72));
+  return min(760, max(520, windowHeight * 0.72));
 }
 
 function updateCastleLayout() {
