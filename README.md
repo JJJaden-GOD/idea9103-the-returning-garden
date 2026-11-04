@@ -11,7 +11,7 @@ The Returning Garden is an interactive p5.js work inspired by the blue tower in 
 1. Download or clone the complete repository, keeping its folders intact.
 2. Open the project folder in Visual Studio Code.
 3. Open `index.html` with **Live Server**. Use the local HTTP address it opens in your browser.
-4. Select **Enter garden** to begin the world cycle. Select **Enable sound** if you want to hear the soundtrack and see the tower breathe.
+4. Select the upper **circular-arrow icon** to enter the garden. Select the **speaker icon** to hear the soundtrack and see the tower breathe. Hover over an icon to see its action name.
 
 No build command, package installation or external CDN is required. The p5.js and p5.sound files are included in `libraries/`, and the soundtrack is stored locally. Use a local web server rather than opening the HTML through a `file://` address, so the browser can load the audio asset correctly.
 
@@ -19,13 +19,13 @@ No build command, package installation or external CDN is required. The p5.js an
 
 | Action | Result |
 |---|---|
-| Enter garden | Starts the visual journey. The button then becomes Restart cycle. |
+| Upper circular-arrow icon | Starts the visual journey. Its hover and accessible name changes from Enter garden to Restart cycle; the arrow icon stays the same. |
 | Click a visible pixel of the tower, or press **E** | Moves the same world timeline to the beginning of Earth. Earth then continues towards Hell and Return. Repeating the action restarts Earth. |
-| **R**, or Restart cycle | Restarts the world timeline at Paradise. It does not rewind the soundtrack or generate a new set of clouds. |
-| **P**, or Pause cycle | Pauses or resumes the world timeline, including light-dust and ember motion. Clouds and any playing soundtrack can continue. |
-| **Space**, or the sound button | Plays or pauses the optional soundtrack. The sound button can also start the garden. Keyboard shortcuts become active after the garden has started. |
+| **R**, or the circular-arrow icon after entry | Restarts the world timeline at Paradise. It does not rewind the soundtrack or generate a new set of clouds. |
+| **P**, or the lower bars/play icon | Pauses or resumes world time, including light-dust and ember motion. The icon changes from pause bars to a play triangle when paused. Clouds and playing audio can continue. |
+| **Space**, or the middle speaker icon | Plays or pauses the optional soundtrack. Its state changes between muted and sounding speaker icons, with the action name Turn sound on or Turn sound off. The sound button can also start the garden. Shortcuts become active after entry. |
 
-Click outside the tower's visible grid cells to leave the timeline unchanged. Browser focus is needed for keyboard input; click the canvas if a shortcut is not responding. When a button has keyboard focus, Space activates that button normally. The phase label and progress line show the current world time.
+The three icons sit vertically beside the artwork. Their action names are available on hover and through accessibility labels. Click outside the tower's visible cells to leave the timeline unchanged. Click empty canvas space if a shortcut needs focus. Space on a focused button activates that button normally. The phase label and continuous progress pill show world time.
 
 Sound starts only after a user action. This project plays a supplied audio file and **does not request microphone access**. If the file cannot load, the visual work remains available and the page displays an audio message.
 
@@ -71,7 +71,7 @@ The original soundtrack was generated offline from mathematical sine-wave tones 
 
 `preload()` loads the audio, `setup()` creates the canvas and class instances, and `draw()` coordinates updates and rendering. `windowResized()` resizes the canvas and recalculates the tower's unit size when the desktop browser window changes. `pixelDensity(1)`, rounded cell edges and small overlaps reduce gaps between the drawn pixels.
 
-The desktop interface uses a dark galaxy background, lilac buttons and the angular Oxanium typeface. Static CSS gradients create the stars and haze without a background image. The page keeps the title, phase and pause state, progress and three controls; the full instructions stay in this README and the accompanying Word explanation. Audio guidance appears only if loading or playback needs attention.
+The desktop interface uses a dark galaxy background, lilac icon buttons and the angular Oxanium typeface. The title and artwork share the viewport centre; equal 88-pixel side columns balance the vertical controls at right. A continuous, rounded 9-pixel progress pill sits at the bottom centre. Inline SVG paths use a 24-by-24 `viewBox`; CSS selects the visible icon through `aria-pressed`. These path and state details extend the taught SVG foundations. Static CSS gradients create stars and haze. Full instructions stay in this README and the Word explanation; audio guidance appears only on failure.
 
 These structures build on the course's arrays, loops, functions, classes, coordinate transforms, `random()`, `noise()`, `lerp()`, `lerpColor()` and p5.sound examples. Browser-specific engineering also supports the presentation: promise callbacks handle audio permission and failure, DOM and accessibility attributes support controls, and additional CSS and a local font style the page. Those supporting details extend the classroom examples; the visual mechanisms use the drawing and animation techniques studied in the course.
 
@@ -85,8 +85,8 @@ The following details support the course-based visual mechanisms. They are expla
 | `floor()` and `round()` | Use p5 convenience calls for the rounding concepts studied with JavaScript's `Math` methods. They select grid cells and align pixel edges. |
 | Canvas `.parent()`/`.elt`, `pixelDensity()`, `frameRate()` and `cursor()` | Place the canvas within the page, set its accessible attributes, keep its backing density predictable, request a target frame rate and provide pointer feedback. |
 | Audio readiness and promise callbacks | Guard missing or unloaded sound, request playback permission after a user gesture, and clear the pending state if the request fails so a retry remains possible. Separate loop mode sets the loaded track to repeat. |
-| Browser state and accessibility | Update labels, progress width, hidden error feedback, disabled controls and ARIA values. Check the focused element to preserve normal Space activation on buttons. |
-| Additional CSS and local font | Use layered gradients, positioning, custom properties and `@font-face` for the surrounding desktop page. They do not generate the tower or replace its grid drawing. |
+| Browser state and accessibility | Update action names through `aria-label` and `title`, progress width, error feedback, disabled controls and pressed states. Preserve the inline SVG children instead of replacing button text. Space on focused buttons keeps its normal action. |
+| Additional CSS and local font | Use CSS Grid for the centred artwork and side columns, layered gradients, custom properties and `@font-face`. Inline SVG icons form the toolbar; the p5.js tower and scene remain rectangle drawings. |
 
 The API sources are the [p5.js reference](https://p5js.org/reference/) and [MDN web documentation](https://developer.mozilla.org/en-US/docs/Web). Specific reference links are also retained in the source comments. The [course-to-code audit](docs/COURSE_CODE_AUDIT.md) distinguishes demonstrated ideas, original applications and supplementary APIs. The separate Python/NumPy audio synthesis is an offline asset-production tool, not a classroom p5.js implementation or a process executed by the browser.
 

@@ -1,6 +1,6 @@
 # Verification record
 
-Review round 1, checked on 4 November 2026 in Chrome, with the project served from a local HTTP server. These observations describe this build; they are not a claim of testing every browser or device.
+Review round 2, checked on 4 November 2026 in Chrome, with the project served from a local HTTP server. Layout and icon observations below are from this round; unchanged world and audio mechanisms also retain the earlier checks. These observations do not cover every browser or device.
 
 The current scope is a desktop browser. Window resizing is retained for the course requirement. Earlier narrow-screen experiments are outside this review scope.
 
@@ -15,14 +15,17 @@ The current scope is a desktop browser. Window resizing is retained for the cour
 | Pause and resume | P and the pause button change the paused state. A paused timeline remains paused after a tower intervention. |
 | Repeated tower intervention | Three consecutive clicks on the visible central shaft leave the phase at Earth, without an immediate automatic reversal. |
 | Background click | Clicking the sky outside the tower leaves the phase unchanged. |
-| Sound gesture | Selecting Enable sound starts playback and changes the button to Sound on. Space on the focused canvas pauses sound. |
+| Sound gesture | Selecting the speaker button starts playback, shows the sound-wave icon and changes its accessible name to Turn sound off. A second click pauses sound and restores the crossed speaker and Turn sound on name. |
+| Icon controls | The circular-arrow button starts the garden and then restarts the clock. Pause bars become a play triangle while paused. Each button retains its SVG children, shows exactly one icon and has matching hover and accessible names. |
+| Native keyboard activation | Space on the focused sound button toggles it once per activation, without triggering the global shortcut twice. |
 | Audio response | Two captures during playback show a small change in the tower's rendered geometry. The numeric scale bounds were checked separately at class level. |
-| Desktop layout | At a 1540 by 684 browser viewport, the canvas is approximately 1118 by 520 pixels, with no horizontal page overflow. |
-| Desktop window resize | At 1024 by 768, the canvas becomes approximately 926 by 553 pixels. All three controls remain within the page width, with no horizontal overflow or new console errors. |
+| Desktop layout | At 1540 by 740, the canvas is approximately 1118 by 533 pixels. The title, artwork and progress all have centre x = 770. The three icons are vertically arranged in a separate right sidebar. |
+| Desktop window resize | At 1024 by 768, the canvas is approximately 734 by 553 pixels and the artwork and progress centre x = 512. No horizontal or vertical overflow occurs. At 1540 by 684, page height stays 684 and the progress bottom is 666. |
+| Rounded progress | The track is a continuous 9-pixel pill with rounded ends and a rounded fill. The earlier quarter-stage dividers have been removed. |
 | Typography and compact interface | The local Oxanium font loaded on desktop. The visible page contains the title, phase, progress labels and three buttons, with no routine interaction paragraphs. |
 | Resize during loading | A guard handles resize events before the castle is constructed. No new console errors appeared during the recorded reload, interaction and resize checks after the fix. |
 
-Phase screenshots are in `screenshots/`. The Return capture is from approximately second 56 of the cycle. `reference-v2.png` is the AI-assisted concept reference, not a screenshot of the running sketch.
+Phase screenshots are in `screenshots/`. This round captured Earth at about second 17, Hell at second 32 and Return at second 52. `reference-v2.png` is the AI-assisted concept reference, not a screenshot of the running sketch.
 
 ## Code and asset checks
 
