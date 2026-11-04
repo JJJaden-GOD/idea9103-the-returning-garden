@@ -1,5 +1,7 @@
 // AI assistance: OpenAI Codex helped implement and check this project mechanic.
 // One clock controls both the automatic cycle and the visitor's intervention.
+// API references: https://p5js.org/reference/p5/millis/
+// https://p5js.org/reference/p5/lerpColor/
 class WorldClock {
   constructor(duration = 60000) {
     this.duration = duration;

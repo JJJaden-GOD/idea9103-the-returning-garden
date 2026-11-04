@@ -1,6 +1,8 @@
 // AI acknowledgement: ChatGPT helped translate the approved V2 concept into
 // a logical pixel grid. The geometry is original code, not an imported image.
 // Source inspiration: Bosch, The Garden of Earthly Delights, central blue tower.
+// Artwork reference: https://commons.wikimedia.org/wiki/File:Garden_delights.jpg
+// Drawing API: https://p5js.org/reference/p5/rect/
 
 class Castle {
   constructor() {

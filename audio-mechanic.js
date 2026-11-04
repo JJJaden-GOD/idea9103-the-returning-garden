@@ -3,6 +3,8 @@
  * It analyses the supplied original WAV with p5.sound; it never opens a microphone.
  * userStartAudio() returns a promise, so its success callback waits for the browser
  * to allow playback after the user's click or key press.
+ * API reference: https://v1.p5js.org/reference/p5.Amplitude/getLevel/
+ * The WAV is original AI-assisted synthesis; see README for its provenance.
  */
 
 class AudioMechanic {

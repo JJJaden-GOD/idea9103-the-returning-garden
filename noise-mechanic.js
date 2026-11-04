@@ -2,6 +2,8 @@
  * AI assistance: OpenAI Codex helped draft this class from the project brief.
  * Course techniques: classes, arrays, for loops, random(), noise(), lerp(),
  * constrain(), and rectangle drawing. Review and explain each method before use.
+ * API references: https://p5js.org/reference/p5/random/
+ * https://p5js.org/reference/p5/noise/
  */
 
 class CloudSystem {
